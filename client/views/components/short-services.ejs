@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-5">
+      <h2 class="section-title">ჩვენი სერვისები</h2>
+    </div>
+    <div class="col-lg-7">
+      <div class="filter-content">
+        <ul class="filter-carousel filter pull-lg-right js-filter-carousel">
+          <li class="active"><a href="#" class="all" data-filter="*">ყველა</a></li>
+          <li><a href="#" data-filter=".measurement">საამზომველო</a></li>
+          <li><a href="#" data-filter=".interior-exterior">არქიტექტურული</a></li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="project-carousel owl-carousel">
+  <% measurementServices.forEach(service=> { %>
+    <div class="project-item item-shadow measurement">
+      <img alt="<%= service.name %>" class="img-responsive" src="/images/projects/1-680x680.jpg">
+      <div class="project-hover">
+        <div class="project-hover-content">
+          <h3 class="project-title">
+            <%= service.name %>
+          </h3>
+          <p class="project-description">
+            <%= service.content.substring(0, 150) %>...
+          </p>
+        </div>
+      </div>
+      <a href="/services/<%= service.id %>" class="link-arrow">See project <i class="icon ion-ios-arrow-right"></i></a>
+    </div>
+    <% }) %>
+
+      <% architecturalServices.forEach(service=> { %>
+        <div class="project-item item-shadow interior-exterior">
+          <img alt="<%= service.name %>" class="img-responsive" src="/images/projects/1-680x680.jpg">
+          <div class="project-hover">
+            <div class="project-hover-content">
+              <h3 class="project-title">
+                <%= service.name %>
+              </h3>
+              <p class="project-description">
+                <%= service.content.substring(0, 150) %>...
+              </p>
+            </div>
+          </div>
+          <a href="/services/<%= service.id %>" class="link-arrow">See project <i
+              class="icon ion-ios-arrow-right"></i></a>
+        </div>
+        <% }) %>
+</div>
