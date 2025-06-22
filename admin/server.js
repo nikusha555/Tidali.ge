@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import initAdminRoutes from './routes/init.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -22,6 +23,10 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 // Parse form data
 app.use(express.urlencoded({ extended: true }));
+
+app.use(express.urlencoded({ extended: true })); // handles form data
+app.use(express.json()); // handles JSON body
+app.use(cookieParser()); // to read cookies
 
 // Init admin routes
 initAdminRoutes(app);
