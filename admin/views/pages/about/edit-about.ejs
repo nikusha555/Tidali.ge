@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/head') %>
+
+    <body>
+        <div class="wrapper">
+            <%- include('../../partials/side-navbar') %>
+                <%- include('../../partials/header') %>
+
+                    <div class="page-content">
+                        <div class="page-container">
+                            <div class="d-flex justify-content-center px-2">
+                                <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header border-bottom border-dashed d-flex align-items-center">
+                                            <h4 class="header-title">ჩვენს შესახებ რედაქტირება</h4>
+                                        </div>
+
+                                        <div class="card-body pt-3 pb-2">
+                                            <!-- ✅ Edit Form -->
+                                            <form action="/edit-about" method="POST" enctype="multipart/form-data">
+
+
+                                                <!-- Current image preview -->
+                                                <% if (about.img_url) { %>
+                                                    <div class="text-center mb-3">
+                                                        <img src="<%= about.img_url %>" alt="Current Image"
+                                                            class="img-fluid rounded" style="max-height: 200px;">
+                                                    </div>
+                                                    <% } %>
+
+                                                        <!-- File input (hidden) -->
+                                                        <div class="fallback">
+                                                            <input name="image" id="imageInput" type="file"
+                                                                accept="image/*" hidden />
+                                                        </div>
+
+                                                        <!-- Image Upload Preview Trigger -->
+                                                        <div class="dz-message needsclick" id="uploadTrigger"
+                                                            style="cursor:pointer;">
+                                                            <i class="ti ti-cloud-upload h1 text-muted"></i>
+                                                            <h3>ატვირთეთ ახალი სურათი</h3>
+                                                            <img id="imagePreview" src="" alt="Preview"
+                                                                class="img-fluid mt-3 d-none"
+                                                                style="max-height: 200px;" />
+                                                        </div>
+
+                                                        <!-- Form inputs -->
+                                                        <div class="mt-3">
+                                                            <input type="text" class="form-control mb-3" name="title"
+                                                                placeholder="სათაური" value="<%= about.title %>"
+                                                                required>
+
+                                                            <input type="text" class="form-control mb-3" name="mini_title"
+                                                                placeholder="ქვე-სათაური" value="<%= about.mini_title %>"
+                                                                required>
+
+
+                                                            <textarea class="form-control mb-3" name="content" rows="5"
+                                                                placeholder="ტექსტი"
+                                                                required><%= about.content %></textarea>
+
+                                                            <div class="d-flex justify-content-center">
+                                                                <button type="submit"
+                                                                    class="btn btn-success">შენახვა</button>
+                                                            </div>
+                                                        </div>
+                                            </form>
+                                        </div> <!-- end card-body -->
+                                    </div> <!-- end card -->
+                                </div> <!-- end col -->
+                            </div>
+                        </div>
+                    </div>
+        </div>
+
+        <!-- JS to handle file preview -->
+        <script>
+            const trigger = document.getElementById('uploadTrigger');
+            const input = document.getElementById('imageInput');
+            const preview = document.getElementById('imagePreview');
+
+            trigger.addEventListener('click', () => input.click());
+
+            input.addEventListener('change', () => {
+                const file = input.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                        preview.classList.remove('d-none');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        </script>
+
+        <%- include('../../partials/footer') %>
+    </body>
+
+</html>

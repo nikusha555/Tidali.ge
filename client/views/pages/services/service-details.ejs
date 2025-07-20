@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/head') %>
+
+    <body>
+
+
+        <!-- Sidebar Menu-->
+        <%- include('../../partials/side-navbar') %>
+
+            <!-- Navbar -->
+            <%- include('../../partials/header') %>
+
+
+                <div class="post-thumbnail masked">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-10 col-lg-6 col-md-offset-1 col-lg-offset-2">
+                                <!-- <div class="title-info">architecture & interior</div> -->
+                                <h1 class="display-1">
+                                    <%= serviceDetails.name %>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-content">
+                    <div class="primary">
+                        <div class="container">
+                            <article class="post">
+                                <div class="row">
+                                    <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
+                                        <div class="posted-on">
+                                            <a class="url fn n" href="#">Admin</a>
+                                            on Dec 15th, 2016
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="entry-content">
+                                    <div class="row">
+                                        <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
+                                            <h3 class="entry-description">To mark the first UK show of artist<br> Henri
+                                                Barande, graphic designer <strong>Pavel Murren</strong> and German
+                                                studio Schultzschultz have created<br> The Lodge Wooden</h3>
+
+                                            <p>
+                                                <%= serviceDetails.content %>
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+
+                <%- include('../../partials/scripts') %>
+
+                    <%- include('../../partials/footer') %>
+    </body>
+
+</html>

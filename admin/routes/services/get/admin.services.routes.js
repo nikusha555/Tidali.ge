@@ -9,28 +9,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 router.get('/', async (req, res) => {
-    try {
-        const [results] = await connection.query(`
+  try {
+    const [results] = await connection.query(`
       SELECT 
+      
+        services.id,
         services.name AS service_name,
         services.content,
+        services.img_url,
         services.created_date,
         service_type.name AS service_type_name
       FROM services
       JOIN service_type ON services.service_type_id = service_type.id
     `);
 
-        // Use absolute path to the EJS file
-
-        res.render(path.join(__dirname, '../../../views/pages/services/admin-services'), { services: results });
-        // postman test
-        // res.json({ services: results });
-
-        console.log('Admin services fetched');
-    } catch (err) {
-        console.error('Error fetching admin services:', err);
-        res.status(500).send('Server error');
-    }
+    res.render('pages/services/services', { services: results });
+  } catch (err) {
+    console.error('Error fetching admin services:', err);
+    res.status(500).render('pages/services/services', { error: 'სერვერის შეცდომა' });
+  }
 });
 
 export default router;

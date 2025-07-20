@@ -29,14 +29,14 @@ router.post('/', async (req, res) => {
         const admin = rows[0];
 
         // Compare password (assuming it's hashed)
-        // const isMatch = password === admin.password;
+        //const isMatch = password === admin.password;
 
-        const isMatch = await bcrypt.compare(password, admin.password);
-        if (!isMatch) {
-            return res.status(401).render('pages/auth/login', {
-                error: 'პაროლი არასწორია',
-            });
-        }
+         const isMatch = await bcrypt.compare(password, admin.password);
+         if (!isMatch) {
+         return res.status(401).render('pages/auth/login', {
+         error: 'პაროლი არასწორია',
+         });
+         }
 
         // Generate JWT
         const token = jwt.sign(
@@ -52,10 +52,12 @@ router.post('/', async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
-        return res.status(200).render('pages/auth/login', {
-            error: 'წარმატებულია',
-        });
-        // res.redirect('/admin/dashboard'); // Change to your desired admin page
+        // return res.status(200).render('pages/auth/login', {
+        //     error: 'წარმატებულია',
+        // });
+
+        res.redirect('/services' ); // Change to your desired admin page
+
     } catch (err) {
         console.error(err);
         res.status(500).send('სერვერზე მოხდა შეცდომა');

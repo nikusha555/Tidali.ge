@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
 // POST: Handle password update
 router.post('/', async (req, res) => {
     const { oldPassword, newPassword, confirmPassword } = req.body;
-    // const adminId = req.admin?.id; // assuming req.admin is set via JWT middleware
-    const adminId = 2; // or whatever the ID is in your database
+     const adminId = req.admin?.id; // assuming req.admin is set via JWT middleware
+    // const adminId = 2; // or whatever the ID is in your database
 
     if (!adminId) return res.status(401).send('გთხოვთ თავიდან შედით სისტემაში');
 
@@ -25,10 +25,12 @@ router.post('/', async (req, res) => {
         const admin = rows[0];
 
         // Check old password
-        const isMatch = oldPassword === admin.password;
+        // Check old password
+        const isMatch = (oldPassword, admin.password);
         if (!isMatch) {
             return res.render('pages/auth/change-password', { error: 'ძველი პაროლი არასწორია' });
         }
+
 
         if (newPassword !== confirmPassword) {
             return res.render('pages/auth/change-password', { error: 'ახალი პაროლები არ ემთხვევა' });
@@ -37,7 +39,7 @@ router.post('/', async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await connection.query('UPDATE admin_users SET password = ? WHERE id = ?', [hashedPassword, adminId]);
 
-        res.render('pages/auth/change-password', { success: 'პაროლი წარმატებით შეიცვალა' });
+        res.redirect('/services')
     } catch (err) {
         console.error(err);
         res.status(500).send('სერვერზე მოხდა შეცდომა');

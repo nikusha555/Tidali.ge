@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/head') %>
+
+    <body>
+
+
+        <!-- Sidebar Menu-->
+        <%- include('../../partials/side-navbar') %>
+
+            <!-- Navbar -->
+            <%- include('../../partials/header') %>
+
+
+                <!-- Pageheader -->
+
+                <main class="page-header-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="title-hr"></div>
+                            </div>
+                            <div class="col-md-8 col-lg-6">
+                                <h1>
+                                    <%= about.title %>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+
+                <div class="content">
+                    <div class="content-entry-image" style="background-image: url('<%= about.img_url %>');">
+                    </div>
+
+                    <div class="page-inner">
+                        <section class="section about-info">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="text-display-1">
+                                            <p><strong class="text-dark">
+                                                    <%= about.mini_title %>
+                                                </strong><br>
+                                                <%= about.content %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+
+                <%- include('../../partials/scripts') %>
+
+                    <%- include('../../partials/footer') %>
+
+    </body>
+
+</html>

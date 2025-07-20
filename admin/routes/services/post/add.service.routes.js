@@ -1,14 +1,21 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import connection from '../../../../config/db.conf.js';
 
 const router = express.Router();
 
+// Define uploads folder and ensure it exists
+const uploadPath = path.resolve('public', 'uploads');
+if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+}
+
 // Set up Multer storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join('public', 'uploads'));
+        cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -17,29 +24,38 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// POST /admin/services/add
+// GET - render add service form
+router.get('/', (req, res) => {
+    res.render('pages/services/add-services');
+});
+
+// POST - handle service creation
 router.post('/', upload.single('image'), async (req, res) => {
     try {
         const { name, content, service_type_id } = req.body;
-        const image = req.file ? `/uploads/${req.file.filename}` : null;
+        const filename = req.file?.filename;
 
-        if (!name || !content || !service_type_id || !image) {
+        if (!name || !content || !service_type_id || !filename) {
             return res.status(400).send('All fields are required including image.');
         }
 
-        const query = `
-      INSERT INTO services (name, content, service_type_id, img_url, created_date)
-      VALUES (?, ?, ?, ?, NOW())
-    `;
+        // ✅ Build full image URL (for production, change localhost to your domain)
+        const image = `http://localhost:3001/uploads/${filename}`;
 
+        // Insert service into database
+        const query = `
+            INSERT INTO services (name, content, service_type_id, img_url, created_date)
+            VALUES (?, ?, ?, ?, NOW())
+        `;
         await connection.query(query, [name, content, service_type_id, image]);
 
-        res.send('Service added successfully');
+        // Redirect to form with success (or use flash message if you want)
+        res.redirect('/admin/services/services');
 
     } catch (err) {
-        console.error('Error adding service:', err);
+        console.error('❌ Error adding service:', err);
         res.status(500).send('Server error');
     }
 });
