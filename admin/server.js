@@ -34,6 +34,6 @@ app.use(methodOverride('_method'));
 initAdminRoutes(app);
 
 // Start server on a different port (e.g., 3001)
-app.listen(3001, () => {
-    console.log('Admin server is running on http://localhost:3001');
+app.listen(3007, () => {
+    console.log('Admin server is running on http://localhost:3007');
 });

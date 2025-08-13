@@ -29,6 +29,6 @@ app.use(express.json());
 initRoutes(app);
 
 // Start client server
-app.listen(3000, () => {
-  console.log('Client is running on http://localhost:3000');
+app.listen(3010, () => {
+  console.log('Client is running on http://localhost:3010');
 });
