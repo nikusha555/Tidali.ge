@@ -12,7 +12,7 @@
             <%- include('../../partials/header') %>
 
 
-                <div class="post-thumbnail masked">
+                <div class="post-thumbnail masked" style="background-image: url('<%= serviceDetails.img_url %>');">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-10 col-lg-6 col-md-offset-1 col-lg-offset-2">
@@ -40,12 +40,10 @@
                                 <div class="entry-content">
                                     <div class="row">
                                         <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
-                                            <h3 class="entry-description">To mark the first UK show of artist<br> Henri
-                                                Barande, graphic designer <strong>Pavel Murren</strong> and German
-                                                studio Schultzschultz have created<br> The Lodge Wooden</h3>
+                                            <h3 class="entry-description"> <%- serviceDetails.content %></h3>
 
                                             <p>
-                                                <%= serviceDetails.content %>
+
                                             </p>
 
                                         </div>

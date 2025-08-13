@@ -47,22 +47,22 @@ router.get('/:id', async (req, res) => {
 router.post('/:id', upload.single('image'), async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, content, service_type_id } = req.body;
+        const { name, content, service_type_id, m_description, m_keywords } = req.body;
         const image = req.file
-            ? `http://localhost:3001/uploads/${req.file.filename}`
-            : null;
+            ? `/uploads/${req.file.filename}`
+            : null; 
 
         // Validate required fields
-        if (!name || !content || !service_type_id) {
+        if (!name || !content || !service_type_id || !m_description || !m_keywords) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
         // Build dynamic query based on image presence
         let query = `
             UPDATE services 
-            SET name = ?, content = ?, service_type_id = ?
+            SET name = ?, content = ?, service_type_id = ?, m_description = ?, m_keywords = ?
         `;
-        const params = [name, content, service_type_id];
+        const params = [name, content, service_type_id, m_description, m_keywords];
 
         if (image) {
             query += `, img_url = ?`;

@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const [results] = await connection.query(`
-      SELECT title, img_url, mini_title, content, m_description, m_keywords
+      SELECT title, img_url, video_url, content, m_description, m_keywords
       FROM about 
       
       `);
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
         const about = results[0];
 
         res.render('pages/about/about', {
-            about, 
+            about,
             m_description: about.m_description,
             m_keywords: about.m_keywords
         });

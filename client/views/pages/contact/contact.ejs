@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/head') %>
+
+    <body>
+
+
+        <!-- Sidebar Menu-->
+        <%- include('../../partials/side-navbar') %>
+
+            <!-- Navbar -->
+            <%- include('../../partials/header') %>
+
+                <div class="container">
+                    <div class="row">
+
+                        <main class="page-header-3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="title-hr"></div>
+                                    </div>
+                                    <div class="col-md-8 col-lg-6">
+                                        <h1>
+                                            <%= contact.title %>
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+
+                </div>
+
+                <div class="content-entry-image" style="background-image: url('<%= contact.img_url %>');">
+                </div>
+
+                <br>
+                <div class="container">
+                    <div class="col-md-9">
+                        <div class="row-contact row">
+                            <div class="col-contact col-lg-6">
+                                <h3 class="contact-title contact-top">თბილისი</h3>
+                                <p class="contact-address text-muted"><strong>მარშალ ი.პილსუდსკის გამზირი, თბილისის
+                                        ზღვის პლაზა</strong></p>
+
+                                <p class="contact-row"><strong class="text-dark">Email:</strong>
+                                    <%= contact.email %>
+                                </p>
+
+                            </div>
+                            <div class="col-contact col-lg-6">
+                                <p class="contact-top"><strong class="text-muted">დაგვირეკეთ:</strong></p>
+                                <p class="phone-lg text-dark">+99 (0) 344 956 4050</p>
+                                <p class="text-muted"><strong class="text-dark">სამუშაო საათები</strong><br>
+                                    ორშაბათი - პარასკევი : 08h00 - 17h30<br>
+                                    შაბათი: 08h00 - 12h00, კვირა - დასვენების დღე</p>
+                                <div class="text-muted"><strong class="text-dark">გამოგვყევით</strong><br>
+                                    <div class="contact-social social-list">
+                                        <a href="#" class="icon ion-social-facebook"></a>
+                                        <a href="#" class="icon ion-social-linkedin"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </main>
+
+
+
+
+
+                <%- include('../../partials/scripts') %>
+
+                    <%- include('../../partials/footer') %>
+    </body>
+
+</html>

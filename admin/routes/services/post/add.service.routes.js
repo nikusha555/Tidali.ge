@@ -34,25 +34,25 @@ router.get('/', (req, res) => {
 // POST - handle service creation
 router.post('/', upload.single('image'), async (req, res) => {
     try {
-        const { name, content, service_type_id } = req.body;
+        const { name, content, service_type_id, m_description, m_keywords } = req.body;
         const filename = req.file?.filename;
 
-        if (!name || !content || !service_type_id || !filename) {
+        if (!name || !content || !service_type_id || !m_description || !m_keywords || !filename) {
             return res.status(400).send('All fields are required including image.');
         }
 
         // ✅ Build full image URL (for production, change localhost to your domain)
-        const image = `http://localhost:3001/uploads/${filename}`;
+        const image = `/uploads/${filename}`;
 
         // Insert service into database
         const query = `
-            INSERT INTO services (name, content, service_type_id, img_url, created_date)
-            VALUES (?, ?, ?, ?, NOW())
+            INSERT INTO services (name, content, service_type_id, img_url, m_description, m_keywords, created_date)
+            VALUES (?, ?, ?, ?, ?, ?, NOW())
         `;
-        await connection.query(query, [name, content, service_type_id, image]);
+        await connection.query(query, [name, content, service_type_id, image, m_description, m_keywords]);
 
         // Redirect to form with success (or use flash message if you want)
-        res.redirect('/admin/services/services');
+        res.redirect('/services');
 
     } catch (err) {
         console.error('❌ Error adding service:', err);

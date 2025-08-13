@@ -18,6 +18,9 @@ app.set('views', path.join(__dirname, 'views'));
 // Serve static files (CSS, JS, local assets)
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve shared uploads from main project root
+app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
+
 // Parse form data (if needed)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

@@ -38,42 +38,50 @@ router.get('/', async (req, res) => {
 
 
 // PUT /admin/services/:id
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'video', maxCount: 1 }
+]), async (req, res) => {
     try {
-        const { title, content, mini_title } = req.body;
-        const image = req.file
-            ? `http://localhost:3001/uploads/${req.file.filename}`
+        const { title, content, m_description, m_keywords } = req.body;
+
+        const image = req.files['image']?.[0]
+            ? `/uploads/${req.files['image'][0].filename}`
             : null;
 
-        // Validate required fields
-        if (!title || !content || !mini_title ) {
+        const video = req.files['video']?.[0]
+            ? `/uploads/${req.files['video'][0].filename}`
+            : null;
+
+        if (!title || !content || !m_description || !m_keywords) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-        // Build dynamic query based on image presence
-        let query = `
-            UPDATE about 
-            SET title = ?, content = ?, mini_title = ?
-        `;
-        const params = [title, content, mini_title];
+        let query = `UPDATE about SET title = ?, content = ? , m_description = ? , m_keywords = ?`;
+        const params = [title, content, m_description, m_keywords];
 
         if (image) {
             query += `, img_url = ?`;
             params.push(image);
         }
 
+        if (video) {
+            query += `, video_url = ?`;
+            params.push(video);
+        }
+
         const [result] = await db.query(query, params);
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: "about not found" });
+            return res.status(404).json({ message: "About not found" });
         }
 
-        // res.status(200).json({ message: "Service updated successfully" });
         res.redirect('/edit-about');
     } catch (err) {
-        console.error("Error updating service:", err);
+        console.error("Error updating about:", err);
         res.status(500).json({ message: "Error updating about" });
     }
 });
+
 
 export default router;

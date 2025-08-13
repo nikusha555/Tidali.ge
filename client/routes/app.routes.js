@@ -8,10 +8,10 @@ router.get('/', async (req, res) => {
   SELECT m_description, m_keywords 
   FROM home
   `)
-const home = meta[0];
+    const home = meta[0];
     // Latest 3 services where service_type_id = 1
     const [measurementServices] = await connection.query(`
-      SELECT name, content, created_date 
+      SELECT name, content, img_url, created_date 
       FROM services 
       WHERE service_type_id = 1 
       ORDER BY created_date DESC 
@@ -20,16 +20,24 @@ const home = meta[0];
 
     // Latest 3 services where service_type_id = 2
     const [architecturalServices] = await connection.query(`
-      SELECT name, content, created_date 
+      SELECT name, content, img_url, created_date 
       FROM services 
       WHERE service_type_id = 2 
       ORDER BY created_date DESC 
       LIMIT 3
     `);
 
+    const [aboutUsRows] = await connection.query(`
+       SELECT title, img_url,  content
+      FROM about
+    `);
+    const aboutUs = aboutUsRows[0];
+
+
     res.render('index', {
       measurementServices,
       architecturalServices,
+      aboutUs,
       m_description: home.m_description,
       m_keywords: home.m_keywords
     });

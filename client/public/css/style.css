@@ -2993,7 +2993,7 @@ a.brand:focus {
 }
 
 .post-thumbnail {
-  background: url(../images/news/1-1920x1080.jpg) 50% no-repeat;
+  background: 50% no-repeat;
   background-size: cover;
   padding: 16.4rem 15px 19rem;
 }
@@ -3758,6 +3758,8 @@ a.brand:focus {
 
 
 
+
+
   /* Section Projects */
 
 
@@ -4108,4 +4110,34 @@ a.brand:focus {
     display: block;
   }
 
+}
+
+
+
+
+
+/* about page title */
+
+.page-header-3 h1 {
+  font-size: 2.5rem;
+  /* Default for desktop */
+  word-wrap: break-word;
+  /* Break long words */
+  overflow-wrap: break-word;
+  white-space: normal;
+  /* Allow wrapping */
+}
+
+@media (max-width: 768px) {
+  .page-header-3 h1 {
+    font-size: 1.8rem;
+    /* Tablet size */
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header-3 h1 {
+    font-size: 1.6rem;
+    /* Mobile size */
+  }
 }

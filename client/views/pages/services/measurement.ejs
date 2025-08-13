@@ -18,15 +18,10 @@
         <div class="content">
           <div class="projects">
             <div class="container">
-              <div class="filter-content-3">
-                <ul class="filter js-filter">
-                  <li class="active"><a href="#" data-filter="*">All</a></li>
-                  <li><a href="#" data-filter=".inspiration">Inspiration</a></li>
-                  <li><a href="#" data-filter=".architecture-inteior">Architecture & Inteior</a></li>
-                  <li><a href="#" data-filter=".decoration">Decoration</a></li>
-                  <li><a href="#" data-filter=".plants">Plants</a></li>
-                </ul>
-              </div>
+              <br>
+              <br>
+              <br> 
+              <br>
               <div class="grid-items js-isotope js-grid-items">
                 <% services.forEach(service=> { %>
                   <div class="grid-item inspiration js-isotope-item js-grid-item">
@@ -45,7 +40,7 @@
                             <%= service.name %>
                           </h3>
                           <p class="news-description">
-                            <%= service.content %>
+                            <%- service.content %>
                           </p>
                         </div>
                         <a class="read-more" href="/service/details/<%= service.id %>">გაიგეთ მეტი</a>

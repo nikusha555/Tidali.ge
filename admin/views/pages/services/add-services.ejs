@@ -37,8 +37,38 @@
                                                     <input type="text" class="form-control mb-3" name="name"
                                                         placeholder="სერვისის სახელი" required>
 
-                                                    <textarea class="form-control mb-3" name="content" rows="5"
-                                                        placeholder="სერვისის აღწერა" required></textarea>
+                                                    <textarea class="form-control mb-3 textarea_editor" name="content"
+                                                        rows="5" placeholder="სერვისის აღწერა"></textarea>
+                                                    <br>
+                                                    <!-- SEO Settings Collapse Toggle -->
+                                                    <div class="text-end mb-2">
+                                                        <a class="btn btn-sm btn-outline-secondary"
+                                                            data-bs-toggle="collapse" href="#seoSettings" role="button"
+                                                            aria-expanded="false" aria-controls="seoSettings">
+                                                            SEO პარამეტრები ▼
+                                                        </a>
+                                                    </div>
+
+                                                    <!-- SEO Settings (Initially Collapsed) -->
+                                                    <div class="collapse" id="seoSettings">
+                                                        <div class="card card-body border rounded shadow-sm mb-3">
+                                                            <div class="form-group mb-3">
+                                                                <label for="meta_description">მეტა აღწერა</label>
+                                                                <textarea class="form-control" name="m_description"
+                                                                    id="m_description" rows="2"
+                                                                    placeholder="მეტა აღწერა..."></textarea>
+                                                            </div>
+
+                                                            <div class="form-group mb-0">
+                                                                <label for="meta_keywords">მეტა საკვანძო
+                                                                    სიტყვები</label>
+                                                                <input type="text" class="form-control"
+                                                                    name="m_keywords" id="m_keywords"
+                                                                    placeholder="მაგ: არქიტექტურა, დიზაინი, ურბანული">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br>
 
                                                     <select class="form-select form-select-lg mb-3"
                                                         name="service_type_id" required>
@@ -81,8 +111,8 @@
                 }
             });
         </script>
-
-        <%- include('../../partials/footer') %>
+        <%- include('../../partials/tinyeditor') %>
+            <%- include('../../partials/footer') %>
     </body>
 
 </html>

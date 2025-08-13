@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
         res.cookie('admin_token', token, {
             httpOnly: true,
             secure: false, // true if using https
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
         });
 
         // return res.status(200).render('pages/auth/login', {

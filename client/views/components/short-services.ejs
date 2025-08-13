@@ -19,7 +19,7 @@
 <div class="project-carousel owl-carousel">
   <% measurementServices.forEach(service=> { %>
     <div class="project-item item-shadow measurement">
-      <img alt="<%= service.name %>" class="img-responsive" src="/images/projects/1-680x680.jpg">
+      <img alt="<%= service.name %>" class="img-responsive" src="<%= service.img_url %>">
       <div class="project-hover">
         <div class="project-hover-content">
           <h3 class="project-title">
@@ -29,20 +29,20 @@
             <%= service.content.substring(0, 150) %>...
           </p>
         </div>
-      </div>
+      </div> 
       <a href="/services/<%= service.id %>" class="link-arrow">See project <i class="icon ion-ios-arrow-right"></i></a>
     </div>
     <% }) %>
 
       <% architecturalServices.forEach(service=> { %>
         <div class="project-item item-shadow interior-exterior">
-          <img alt="<%= service.name %>" class="img-responsive" src="/images/projects/1-680x680.jpg">
+          <img alt="<%= service.name %>" class="img-responsive" src="<%= service.img_url %>">
           <div class="project-hover">
             <div class="project-hover-content">
               <h3 class="project-title">
                 <%= service.name %>
               </h3>
-              <p class="project-description">
+              <p class="project-description"> 
                 <%= service.content.substring(0, 150) %>...
               </p>
             </div>

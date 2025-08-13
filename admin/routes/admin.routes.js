@@ -5,7 +5,7 @@ const router = express.Router();
 
 
  router.get('/', (req, res) => {
-     res.redirect('admin/login')
+     res.redirect('/services')
  });
 
 export default router;
