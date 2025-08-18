@@ -26,10 +26,10 @@
             <%= service.name %>
           </h3>
           <p class="project-description">
-            <%= service.content.substring(0, 150) %>...
+            <%= service.preview %>...
           </p>
         </div>
-      </div> 
+      </div>
       <a href="/services/<%= service.id %>" class="link-arrow">See project <i class="icon ion-ios-arrow-right"></i></a>
     </div>
     <% }) %>
@@ -42,8 +42,8 @@
               <h3 class="project-title">
                 <%= service.name %>
               </h3>
-              <p class="project-description"> 
-                <%= service.content.substring(0, 150) %>...
+              <p class="project-description">
+                <%= service.preview %>...
               </p>
             </div>
           </div>

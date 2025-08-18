@@ -12,47 +12,29 @@
             <%- include('../../partials/header') %>
 
 
-                <div class="post-thumbnail masked" style="background-image: url('<%= serviceDetails.img_url %>');">
+                <section class="section-about">
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-10 col-lg-6 col-md-offset-1 col-lg-offset-2">
-                                <!-- <div class="title-info">architecture & interior</div> -->
-                                <h1 class="display-1">
+                            <div class="col-md-6">
+                                <strong class="section-subtitle">სერვისი</strong>
+                                <h2 class="section-title section-about-title">
                                     <%= serviceDetails.name %>
-                                </h1>
+                                </h2>
+                                <p class="">
+                                    <%- serviceDetails.content %>
+                                </p>
+                                <p></p>
+
+                            </div>
+                            <div class="col-md-5 col-md-offset-1">
+                                <div class="dots-image">
+                                    <img alt="" class="about-img img-responsive" src="<%= serviceDetails.img_url %>">
+                                    <div class="dots"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="page-content">
-                    <div class="primary">
-                        <div class="container">
-                            <article class="post">
-                                <div class="row">
-                                    <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
-                                        <div class="posted-on">
-                                            <a class="url fn n" href="#">Admin</a>
-                                            on Dec 15th, 2016
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="entry-content">
-                                    <div class="row">
-                                        <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
-                                            <h3 class="entry-description"> <%- serviceDetails.content %></h3>
-
-                                            <p>
-
-                                            </p>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                </div>
+                </section>
 
                 <%- include('../../partials/scripts') %>
 

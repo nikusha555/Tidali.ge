@@ -20,7 +20,8 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
-    "multer": "^2.0.0"
+    "multer": "^2.0.0",
+    "striptags": "^3.2.0"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
