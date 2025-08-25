@@ -12,6 +12,25 @@ router.get('/', async (req, res) => {
     `);
     const home = meta[0];
 
+    // slider 
+    const [slides] = await connection.query(`
+      SELECT id, title, img_url
+      FROM slider 
+     
+    `);
+    const slidesWithFormattedTitles = slides.map(slide => {
+      const words = slide.title.split(" ");
+      let formattedTitle = "";
+      for (let i = 0; i < words.length; i++) {
+        formattedTitle += words[i] + " ";
+        if ((i + 1) % 2 === 0) {
+          formattedTitle += "<br>";
+        }
+      }
+      return { ...slide, formattedTitle };
+    }); // END slider
+
+
     // Latest 3 services where service_type_id = 1
     const [measurementServicesRaw] = await connection.query(`
       SELECT id, name, content, img_url, created_date 
@@ -47,7 +66,12 @@ router.get('/', async (req, res) => {
       preview: striptags(s.content).substring(0, 150)
     }));
 
+
+
+
+
     res.render('index', {
+      slides: slidesWithFormattedTitles,
       measurementServices,
       architecturalServices,
       aboutUs,

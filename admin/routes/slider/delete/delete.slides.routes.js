@@ -27,24 +27,24 @@ router.get('/:id', async (req, res) => {
     try {
         // 1. fetch image name (if you store it)
         const [rows] = await db.query(
-            'SELECT img_url FROM services WHERE id = ? LIMIT 1',
+            'SELECT img_url FROM slider WHERE id = ? LIMIT 1',
             [id],
         );
-        if (rows.length === 0) return res.status(404).send('Service not found');
+        if (rows.length === 0) return res.status(404).send('Slide not found');
 
         const { image } = rows[0];
 
         // 2. delete the DB row
-        await db.query('DELETE FROM services WHERE id = ?', [id]);
+        await db.query('DELETE FROM slider WHERE id = ?', [id]);
 
         // 3. delete the file
-        await removeImage(image); 
+        await removeImage(image);
 
         // 4. back to the list
-        res.redirect('/services');
+        res.redirect('/slider');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Something went wrong while deleting the service');
+        res.status(500).send('Something went wrong while deleting the slide');
     }
 });
 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/head') %>
+
+    <body>
+        <div class="wrapper">
+            <%- include('../../partials/side-navbar') %>
+                <%- include('../../partials/header') %>
+                    <div class="row justify-content-center">
+                        <div class="col-xl-8">
+                            <div class="card mx-auto" style="width: 100%; max-width: 900px;">
+
+                                <div class="card-header border-bottom border-dashed d-flex align-items-center">
+                                    <h4 class="header-title">Striped Rows</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="table-responsive-sm w-100">
+                                            <table class="table table-striped mb-0 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th>სათაური</th>
+                                                        <th>თარიღი</th>
+                                                        <th>მოქმედება</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% slides.forEach(slide=> { %>
+                                                        <tr>
+                                                            <td>
+                                                                <img src="<%= slide.img_url %>"
+                                                                    class="me-2 avatar-sm rounded-circle" />
+                                                                <%= slide.title %>
+                                                            </td>
+                                                            <td>
+                                                                <%= slide.created_date ? new
+                                                                    Date(slide.created_date).toISOString().split('T')[0]
+                                                                    : '' %>
+                                                            </td>
+                                                            <td>
+                                                                <a href="edit-slides/<%= slide.id %>"><i
+                                                                        class="ti ti-pencil"></i></a>
+                                                                <a href="javascript:void(0)"
+                                                                    onclick="openDeleteModal('<%= slide.id %>')">
+                                                                    <i class="ti ti-trash"></i>
+                                                                </a>
+                                                            </td>
+
+                                                        </tr>
+                                                        <% }) %>
+                                                            <div class="modal fade" id="deleteModal" tabindex="-1"
+                                                                aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">გსურს წაშლა?</h5>
+                                                                            <button type="button" class="btn-close"
+                                                                                data-bs-dismiss="modal"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            ნამდვილად გსურს ამ სლაიდის წაშლა?
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                class="btn btn-secondary"
+                                                                                data-bs-dismiss="modal">არა</button>
+                                                                            <a id="confirmDeleteBtn"
+                                                                                class="btn btn-danger">დიახ</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <a href="add-slides" class="btn btn-primary"><i
+                                                                    class="ti ti-plus me-1"></i>სლაიდების
+                                                                დამატება</a>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div> <!-- end card -->
+                        </div><!-- end col-->
+
+
+                    </div>
+                    <!-- end row-->
+        </div>
+        <%- include('../../partials/footer') %>
+            <script>
+                function openDeleteModal(slideId) {
+                    const confirmBtn = document.getElementById('confirmDeleteBtn');
+                    confirmBtn.href = 'delete-slides/' + slideId;
+                    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                    modal.show();
+                }
+            </script>
+
+
+    </body>
+
+</html>

@@ -9,6 +9,10 @@ import deleteServices from './services/delete/delete.service.routes.js';
 import requireAdmin from '../middlewares/require.admin.js';
 import editAbout from './about/edit.about.routes.js';
 import editContact from './contact/edit.contact.routes.js';
+import addSlidesRoutes from './slider/post/add.slide.routes.js';
+import slider from './slider/get/slider.routes.js';
+import editSlides from './slider/edit/edit.slides.routes.js';
+import deleteSlides from './slider/delete/delete.slides.routes.js';
 
 
 export default (app) => {
@@ -21,5 +25,8 @@ export default (app) => {
     app.use('/delete-services', requireAdmin, deleteServices);
     app.use('/edit-about', requireAdmin, editAbout);
     app.use('/edit-contact', requireAdmin, editContact);
-
+    app.use('/add-slides', requireAdmin, addSlidesRoutes);
+    app.use('/slider', requireAdmin, slider);
+    app.use('/edit-slides', requireAdmin, editSlides);
+    app.use('/delete-slides', requireAdmin, deleteSlides);
 }

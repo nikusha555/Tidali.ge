@@ -42,8 +42,38 @@
                                                             <td>
                                                                 <a href="edit-services/<%= service.id %>"><i
                                                                         class="ti ti-pencil"></i></a>
-                                                                <a href="delete-services/<%= service.id %>"><i
-                                                                        class="ti ti-trash"></i></a>
+                                                                <a href="javascript:void(0)"
+                                                                    onclick="openDeleteModal('<%= service.id %>')">
+                                                                    <i class="ti ti-trash"></i>
+                                                                </a>
+
+
+
+                                                                <!-- Delete Confirmation Modal -->
+                                                                <div class="modal fade" id="deleteModal" tabindex="-1"
+                                                                    aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">გსურს წაშლა?
+                                                                                </h5>
+                                                                                <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                ნამდვილად გსურს ამ სერვისის წაშლა?
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-bs-dismiss="modal">არა</button>
+                                                                                <a id="confirmDeleteBtn"
+                                                                                    class="btn btn-danger">დიახ</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
                                                             </td>
                                                         </tr>
                                                         <% }) %>
@@ -63,6 +93,15 @@
                     <!-- end row-->
         </div>
         <%- include('../../partials/footer') %>
+            <script>
+                function openDeleteModal(serviceId) {
+                    const confirmBtn = document.getElementById('confirmDeleteBtn');
+                    confirmBtn.href = 'delete-services/' + serviceId;
+                    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                    modal.show();
+                }
+            </script>
+
 
     </body>
 
