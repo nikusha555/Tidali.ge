@@ -21,12 +21,11 @@
                                             <form action="/edit-services/<%= service.id %>" method="POST"
                                                 enctype="multipart/form-data">
 
-
-                                                <!-- Current image preview -->
+                                                <!-- Current main image preview -->
                                                 <% if (service.img_url) { %>
                                                     <div class="text-center mb-3">
                                                         <img src="<%= service.img_url %>" alt="Current Image"
-                                                            class="img-fluid rounded" style="max-height: 200px; ">
+                                                            class="img-fluid rounded" style="max-height: 200px;">
                                                     </div>
                                                     <% } %>
 
@@ -36,7 +35,7 @@
                                                                 accept="image/*" hidden />
                                                         </div>
 
-                                                        <!-- Image Upload Preview Trigger -->
+                                                        <!-- Main Image Upload Preview Trigger -->
                                                         <div class="dz-message needsclick" id="uploadTrigger"
                                                             style="cursor:pointer;">
                                                             <i class="ti ti-cloud-upload h1 text-muted"></i>
@@ -56,6 +55,7 @@
                                                                 name="content" rows="5" placeholder="სერვისის აღწერა"
                                                                 required><%= service.content %></textarea>
                                                             <br>
+
                                                             <!-- SEO Settings Collapse Toggle -->
                                                             <div class="text-end mb-2">
                                                                 <a class="btn btn-sm btn-outline-secondary"
@@ -84,10 +84,13 @@
                                                                             სიტყვები</label>
                                                                         <input type="text" class="form-control"
                                                                             name="m_keywords" id="m_keywords"
-                                                                            placeholder="" value="<%= service.m_keywords %>">
+                                                                            value="<%= service.m_keywords %>">
                                                                     </div>
                                                                 </div>
-                                                            </div> <br>
+                                                            </div>
+                                                            <br>
+
+                                                            <!-- Service Type -->
                                                             <select class="form-select form-select-lg mb-3"
                                                                 name="service_type_id" required>
                                                                 <option disabled>აირჩიეთ სერვისის კატეგორია</option>
@@ -97,12 +100,63 @@
                                                                     ? 'selected' : '' %>>არქიტექტურული</option>
                                                             </select>
 
+                                                            <!-- SEO Settings Collapse Toggle -->
+                                                            <div class="text-end mb-2">
+                                                                <a class="btn btn-sm btn-outline-secondary"
+                                                                    data-bs-toggle="collapse" href="#gallerySettings"
+                                                                    role="button" aria-expanded="false"
+                                                                    aria-controls="gallerySettings">
+                                                                    გალერეა ▼
+                                                                </a>
+                                                            </div>
+
+                                                            <!-- Collapsible Gallery Section -->
+                                                            <div class="collapse" id="gallerySettings">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">გალერეის სურათების
+                                                                        დამატება</label>
+                                                                    <input type="file" class="form-control"
+                                                                        name="gallery" multiple>
+                                                                    <small class="text-muted">შეგიძლიათ აირჩიოთ
+                                                                        რამდენიმე სურათი ერთად</small>
+                                                                </div>
+
+                                                                <!-- Show existing gallery -->
+                                                                <div class="d-flex flex-wrap mt-3">
+                                                                    <% gallery.forEach(img=> { %>
+                                                                        <div class="gallery-item position-relative m-2">
+                                                                            <img src="<%= img.img_url %>" alt="gallery"
+                                                                                class="img-thumbnail"
+                                                                                style="max-width:150px; max-height:150px;">
+                                                                        </div>
+                                                                        <% }) %>
+                                                                </div>
+
+                                                                <!-- Button to go to delete page -->
+                                                                <div class="text-end mt-2">
+                                                                    <a href="/edit-services/<%= service.id %>/gallery-delete"
+                                                                        class="btn btn-danger btn-sm">
+                                                                        გალერეის მართვა / წაშლა
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Gallery Upload inside edit form -->
+
+
+
+
+
                                                             <div class="d-flex justify-content-center">
                                                                 <button type="submit"
                                                                     class="btn btn-success">შენახვა</button>
                                                             </div>
                                                         </div>
                                             </form>
+
+
+
+
+
                                         </div> <!-- end card-body -->
                                     </div> <!-- end card -->
                                 </div> <!-- end col -->
@@ -131,6 +185,7 @@
                 }
             });
         </script>
+
         <%- include('../../partials/tinyeditor') %>
             <%- include('../../partials/footer') %>
     </body>

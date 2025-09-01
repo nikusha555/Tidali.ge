@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/head') %>
+
+    <body>
+        <div class="wrapper">
+            <%- include('../../partials/side-navbar') %>
+                <%- include('../../partials/header') %>
+
+                    <div class="page-content">
+                        <div class="page-container d-flex justify-content-center">
+                            <div class="col-12 col-md-8 col-lg-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>გალერეის სურათების წაშლა</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <% if (gallery.length> 0) { %>
+                                                <% gallery.forEach(img=> { %>
+                                                    <div class="col-6 col-md-4 mb-3">
+                                                        <div class="card">
+                                                            <img src="<%= img.img_url %>" class="card-img-top">
+                                                            <div class="card-body text-center">
+                                                                <form
+                                                                    action="/edit-services/<%= service.id %>/gallery/<%= img.id %>/delete"
+                                                                    method="POST">
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger btn-sm">წაშლა</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% }) %>
+                                                        <% } else { %>
+                                                            <p class="text-muted">სურათები ჯერ არ არის ატვირთული.</p>
+                                                            <% } %>
+                                        </div>
+
+                                        <a href="/edit-services/<%= service.id %>"
+                                            class="btn btn-secondary">დაბრუნება</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <%- include('../../partials/footer') %>
+        </div>
+    </body>
+
+</html>

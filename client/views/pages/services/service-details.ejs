@@ -36,10 +36,26 @@
                     </div>
                 </section>
 
-                <div class="wrapper boxed">
-                    <%- include('../../partials/footer') %>
-                        <%- include('../../partials/scripts') %>
-                </div>
+                <% if (galleryImages.length> 0) { %>
+                    <section class="section-news section">
+                        <div class="container">
+                            <h2 class="section-title">ჩვენი ნამუშევრები</h2>
+                            <div class="news-carousel owl-carousel">
+                                <% galleryImages.forEach(img=> { %>
+                                    <div class="news-item">
+                                        <img alt="" src="<%= img.img_url %>">
+                                    </div>
+                                    <% }) %>
+                            </div>
+                        </div>
+                    </section>
+                    <% } %>
+
+
+                        <div class="wrapper boxed">
+                            <%- include('../../partials/footer') %>
+                                <%- include('../../partials/scripts') %>
+                        </div>
     </body>
 
 </html>

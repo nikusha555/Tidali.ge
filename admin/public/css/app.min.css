@@ -1,6 +1,30 @@
 @charset "UTF-8";
 @import url(https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap);
 
+.gallery-item {
+    position: relative;
+    display: inline-block;
+}
+
+.gallery-item form {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: none;
+}
+
+.gallery-item:hover form {
+    display: block;
+}
+
+
+
+
+
+
+
+
+
 :root {
     --ct-logo-lg-height: 22px;
     --ct-logo-sm-height: 28px;
