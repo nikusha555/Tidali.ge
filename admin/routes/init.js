@@ -19,7 +19,7 @@ export default (app) => {
     app.use('/', adminRoutes)
     app.use('/admin/login', loginRoutes);
     app.use('/admin/change-password', requireAdmin, changePassRoutes);
-    app.use('/services', services);
+    app.use('/services', requireAdmin, services);
     app.use('/add-services', requireAdmin, addServicesRoutes);
     app.use('/edit-services', requireAdmin, editServices);
     app.use('/delete-services', requireAdmin, deleteServices);

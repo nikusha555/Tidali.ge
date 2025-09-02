@@ -4,8 +4,8 @@ const router = express.Router();
 
 
 
- router.get('/', (req, res) => {
-     res.redirect('/services')
- });
+router.get('/', (req, res) => {
+    res.redirect('/admin/login')
+});
 
 export default router;
