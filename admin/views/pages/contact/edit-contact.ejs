@@ -29,17 +29,25 @@
                                                                 style="max-height: 250px;">
                                                             <% } %>
 
-                                                                <!-- Upload new image trigger -->
-                                                                <div class="dz-message needsclick mt-3"
-                                                                    id="uploadTrigger" style="cursor:pointer;">
-                                                                    <i class="ti ti-cloud-upload h1 text-muted"></i>
-                                                                    <h4>ატვირთეთ ახალი სურათი</h4>
-                                                                    <input name="image" id="imageInput" type="file"
-                                                                        accept="image/*" hidden />
-                                                                    <img id="imagePreview" src="" alt="Preview"
-                                                                        class="img-fluid mt-3 d-none"
-                                                                        style="max-height: 200px;" />
-                                                                </div>
+                                                                <% if (contact.img_url) { %>
+                                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                                        onclick="deleteImage()">
+                                                                        🗑 სურათის წაშლა
+                                                                    </button>
+                                                                    <% } %>
+
+                                                                        <!-- Upload new image trigger -->
+                                                                        <div class="dz-message needsclick mt-3"
+                                                                            id="uploadTrigger" style="cursor:pointer;">
+                                                                            <i
+                                                                                class="ti ti-cloud-upload h1 text-muted"></i>
+                                                                            <h4>ატვირთეთ ახალი სურათი</h4>
+                                                                            <input name="image" id="imageInput"
+                                                                                type="file" accept="image/*" hidden />
+                                                                            <img id="imagePreview" src="" alt="Preview"
+                                                                                class="img-fluid mt-3 d-none"
+                                                                                style="max-height: 200px;" />
+                                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -51,7 +59,7 @@
 
 
                                                     <textarea class="form-control mb-3" name="email" rows="5"
-                                                        placeholder="ტექსტი" required><%= contact.email %></textarea>
+                                                        placeholder="იმეილი" required><%= contact.email %></textarea>
                                                 </div>
 
                                                 <!-- SEO Settings Collapse Toggle -->
@@ -115,6 +123,24 @@
                     reader.readAsDataURL(file);
                 }
             });
+
+
+            async function deleteImage() {
+                if (!confirm('წავშალო სურათი?')) return;
+
+                const res = await fetch('/edit-contact/media/delete-image', {
+                    method: 'POST'
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('წაშლა ვერ მოხერხდა');
+                }
+            }
+
 
         </script>
 

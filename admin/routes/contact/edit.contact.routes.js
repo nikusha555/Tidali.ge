@@ -2,6 +2,8 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import db from '../../../config/db.conf.js';
+import fs from 'fs';
+
 
 const router = express.Router();
 
@@ -37,6 +39,38 @@ router.get('/', async (req, res) => {
 });
 
 
+router.post('/media/delete-image', async (req, res) => {
+    try {
+        const [[contact]] = await db.query(
+            'SELECT img_url FROM contact LIMIT 1'
+        );
+
+        if (contact?.img_url) {
+            const filePath = path.join(
+                'public',
+                contact.img_url.replace('/uploads/', 'uploads/')
+            );
+
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+
+            await db.query(
+                'UPDATE contact SET img_url = NULL'
+            );
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false });
+    }
+});
+
+
+
+
+
 // PUT /admin/services/:id
 router.post('/', upload.fields([
     { name: 'image', maxCount: 1 },
@@ -68,10 +102,10 @@ router.post('/', upload.fields([
             return res.status(404).json({ message: "About not found" });
         }
 
-        res.redirect('/edit-about');
+        res.redirect('/edit-contact');
     } catch (err) {
-        console.error("Error updating about:", err);
-        res.status(500).json({ message: "Error updating about" });
+        console.error("Error updating contact:", err);
+        res.status(500).json({ message: "Error updating contact" });
     }
 });
 

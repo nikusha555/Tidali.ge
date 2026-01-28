@@ -2,6 +2,9 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import db from '../../../config/db.conf.js';
+import fs from 'fs';
+import requireAdmin from '../../middlewares/require.admin.js';
+
 
 const router = express.Router();
 
@@ -21,7 +24,7 @@ const upload = multer({ storage: storage });
 
 
 // GET /admin/services/:id/edit-services
-router.get('/', async (req, res) => {
+router.get('/',  requireAdmin, async (req, res) => {
     try {
         const [[about]] = await db.query(
             'SELECT * FROM about',
@@ -36,9 +39,63 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.post('/media/delete-image', async (req, res) => {
+    const [[about]] = await db.query(
+        'SELECT img_url FROM about LIMIT 1'
+    );
+
+    if (about?.img_url) {
+        const filePath = path.join(
+            'public',
+            about.img_url.replace('/uploads/', 'uploads/')
+        );
+
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+
+        await db.query(
+            'UPDATE about SET img_url = NULL'
+        );
+    }
+
+    res.redirect('/edit-about');
+});
+
+
+router.post('/media/delete-video', async (req, res) => {
+    try {
+        const [[about]] = await db.query(
+            'SELECT video_url FROM about LIMIT 1'
+        );
+
+        if (about?.video_url) {
+            const filePath = path.join(
+                'public',
+                about.video_url.replace('/uploads/', 'uploads/')
+            );
+
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+
+            await db.query(
+                'UPDATE about SET video_url = NULL'
+            );
+        }
+
+        res.redirect('/edit-about');
+    } catch (err) {
+        console.error('Delete video error:', err);
+        res.status(500).send('Error deleting video');
+    }
+});
+
+
+
 
 // PUT /admin/services/:id
-router.post('/', upload.fields([
+router.post('/update', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'video', maxCount: 1 }
 ]), async (req, res) => {
@@ -82,6 +139,13 @@ router.post('/', upload.fields([
         res.status(500).json({ message: "Error updating about" });
     }
 });
+
+
+
+
+
+
+
 
 
 export default router;
