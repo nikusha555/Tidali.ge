@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const [results] = await connection.query(`
-      SELECT id, name, mini_title, content, img_url, created_date
+      SELECT id, name, content, img_url, created_date
       FROM services 
       WHERE service_type_id = 1
     `);
