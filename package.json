@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "node --watch app.js",
-    "test": "node --test \"test/**/*.test.js\""
+    "test": "node --test --experimental-test-module-mocks \"test/**/*.test.js\""
   },
   "keywords": [],
   "author": "",

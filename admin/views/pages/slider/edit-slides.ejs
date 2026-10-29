@@ -22,6 +22,10 @@
                                                 enctype="multipart/form-data">
                                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
+                                                <% if (typeof error !== 'undefined' && error) { %>
+                                                    <div class="alert alert-danger"><%= error %></div>
+                                                <% } %>
+
 
                                                 <!-- Current image preview -->
                                                 <% if (slide.img_url) { %>
@@ -34,7 +38,7 @@
                                                         <!-- File input (hidden) -->
                                                         <div class="fallback">
                                                             <input name="image" id="imageInput" type="file"
-                                                                accept="image/*" hidden />
+                                                                accept="image/jpeg,image/png,image/webp,image/gif" hidden />
                                                         </div>
 
                                                         <!-- Image Upload Preview Trigger -->
@@ -76,8 +80,20 @@
 
             trigger.addEventListener('click', () => input.click());
 
+            // Same limits as the server (edit.slides.routes.js)
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+            const maxBytes = 5 * 1024 * 1024;
+
             input.addEventListener('change', () => {
                 const file = input.files[0];
+                if (file && (!allowedTypes.includes(file.type) || file.size > maxBytes)) {
+                    alert(!allowedTypes.includes(file.type)
+                        ? 'ფაილის ეს ფორმატი არ არის მხარდაჭერილი. გამოიყენეთ JPG, PNG, WEBP ან GIF.'
+                        : 'სურათი ძალიან დიდია. მაქსიმალური ზომაა 5 MB.');
+                    input.value = '';
+                    preview.classList.add('d-none');
+                    return;
+                }
                 if (file && file.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = (e) => {

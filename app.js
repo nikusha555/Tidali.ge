@@ -10,9 +10,19 @@ import express from 'express';
 import multer from 'multer';
 import createClientApp from './client/app.js';
 import createAdminApp, { ADMIN_BASE } from './admin/app.js';
+import { UPLOADS_DIR } from './config/uploads.js';
+import fs from 'fs';
 
 if (!process.env.JWT_SECRET) {
     console.error('JWT_SECRET is not set — admin login will fail until it is configured.');
+}
+
+// Startup check: uploads are written to and served from this directory.
+try {
+    fs.accessSync(UPLOADS_DIR, fs.constants.W_OK);
+    console.log(`Uploads directory: ${UPLOADS_DIR} (writable)`);
+} catch (err) {
+    console.error(`Uploads directory ${UPLOADS_DIR} is not writable (${err.code}) — image uploads will fail.`);
 }
 
 const app = express();
