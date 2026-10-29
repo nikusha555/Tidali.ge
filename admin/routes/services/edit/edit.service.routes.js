@@ -1,21 +1,11 @@
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
 import db from '../../../../config/db.conf.js';
+import { storage } from '../../../../config/uploads.js';
+import { verifyCsrfAfterUpload } from '../../../middlewares/csrf.js';
 
 const router = express.Router();
 
-// Set up multer storage for image upload
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join('public', 'uploads'));
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-    }
-});
 
 const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
@@ -50,7 +40,7 @@ router.get('/:id', async (req, res) => {
 router.post('/:id', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'gallery', maxCount: 10 }
-]), async (req, res) => {
+]), verifyCsrfAfterUpload, async (req, res) => {
     try {
         const { id } = req.params;
         const { name, content, service_type_id, m_description, m_keywords } = req.body;
@@ -82,7 +72,7 @@ router.post('/:id', upload.fields([
             await db.query('INSERT INTO service_gallery (service_id, img_url) VALUES ?', [values]);
         }
 
-        res.redirect(`/services`);
+        res.redirect(`${res.locals.adminBase}/services`);
     } catch (err) {
         console.error("Error updating service:", err);
         res.status(500).json({ message: "Error updating service" });
@@ -120,7 +110,7 @@ router.post('/:id/gallery/:imageId/delete', async (req, res) => {
             return res.status(404).json({ message: 'Image not found' });
         }
 
-        res.redirect(`/edit-services/${id}/gallery-delete`);
+        res.redirect(`${res.locals.adminBase}/edit-services/${id}/gallery-delete`);
     } catch (err) {
         console.error("Error deleting gallery image:", err);
         res.status(500).json({ message: "Error deleting image" });

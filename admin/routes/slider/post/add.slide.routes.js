@@ -1,28 +1,11 @@
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
 import connection from '../../../../config/db.conf.js';
+import { storage } from '../../../../config/uploads.js';
+import { verifyCsrfAfterUpload } from '../../../middlewares/csrf.js';
 
 const router = express.Router();
 
-// Define uploads folder and ensure it exists
-const uploadPath = path.resolve('public', 'uploads');
-if (!fs.existsSync(uploadPath)) {
-    fs.mkdirSync(uploadPath, { recursive: true });
-}
-
-// Set up Multer storage
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-    }
-});
 
 const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
@@ -42,7 +25,7 @@ router.get('/', (req, res) => {
 });
 
 // POST - handle slides creation
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', upload.single('image'), verifyCsrfAfterUpload, async (req, res) => {
     try {
         const { title } = req.body;
         const filename = req.file?.filename;
@@ -62,7 +45,7 @@ router.post('/', upload.single('image'), async (req, res) => {
         await connection.query(query, [title, image]);
 
         // Redirect to form with success (or use flash message if you want)
-        res.redirect('/slider');
+        res.redirect(`${res.locals.adminBase}/slider`);
 
     } catch (err) {
         console.error('❌ Error adding slide:', err);

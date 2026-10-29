@@ -2,8 +2,8 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import connection from '../../../config/db.conf.js'; // Adjust path as needed
-import dotenv from 'dotenv';
-dotenv.config();
+import { ADMIN_COOKIE, adminCookieOptions } from '../../middlewares/admin.safety.js';
+import { issueCsrfSecret } from '../../middlewares/csrf.js';
 
 const router = express.Router();
 
@@ -42,21 +42,22 @@ router.post('/', async (req, res) => {
         const token = jwt.sign(
             { id: admin.id, username: admin.username },
             process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN }
+            // without a default the token would never expire if the variable is unset
+            { algorithm: 'HS256', expiresIn: process.env.JWT_EXPIRES_IN || '3d' }
         );
 
         // Set JWT in cookie (you can also return it in JSON if you're using frontend)
-        res.cookie('admin_token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+        res.cookie(ADMIN_COOKIE, token, {
+            ...adminCookieOptions(res),
             maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
         });
+        issueCsrfSecret(res); // fresh CSRF secret for the new login
 
         // return res.status(200).render('pages/auth/login', {
         //     error: 'წარმატებულია',
         // });
 
-        res.redirect('/services' ); // Change to your desired admin page
+        res.redirect(`${res.locals.adminBase}/services` ); // Change to your desired admin page
 
     } catch (err) {
         console.error(err);

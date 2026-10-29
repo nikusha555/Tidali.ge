@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
         res.render('pages/slider/slides', { slides: results });
     } catch (err) {
         console.error('Error fetching admin slider:', err);
-        res.status(500).render('pages/slider/slides', { error: 'სერვერის შეცდომა' });
+        res.status(500).render('pages/slider/slides', { slides: [], error: 'სერვერის შეცდომა' });
     }
 });
 

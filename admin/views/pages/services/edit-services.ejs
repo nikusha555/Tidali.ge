@@ -18,8 +18,9 @@
 
                                         <div class="card-body pt-3 pb-2">
                                             <!-- ✅ Edit Form -->
-                                            <form action="/edit-services/<%= service.id %>" method="POST"
+                                            <form action="<%= adminBase %>/edit-services/<%= service.id %>" method="POST"
                                                 enctype="multipart/form-data">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
                                                 <!-- Current main image preview -->
                                                 <% if (service.img_url) { %>
@@ -134,7 +135,7 @@
 
                                                                 <!-- Button to go to delete page -->
                                                                 <div class="text-end mt-2">
-                                                                    <a href="/edit-services/<%= service.id %>/gallery-delete"
+                                                                    <a href="<%= adminBase %>/edit-services/<%= service.id %>/gallery-delete"
                                                                         class="btn btn-danger btn-sm">
                                                                         გალერეის მართვა / წაშლა
                                                                     </a>

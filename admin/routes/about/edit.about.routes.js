@@ -1,24 +1,14 @@
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
 import db from '../../../config/db.conf.js';
 import fs from 'fs';
 import requireAdmin from '../../middlewares/require.admin.js';
+import { storage, uploadedFilePath } from '../../../config/uploads.js';
+import { verifyCsrfAfterUpload } from '../../middlewares/csrf.js';
 
 
 const router = express.Router();
 
-// Set up multer storage for image upload
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join('public', 'uploads'));
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-    }
-});
 
 const allowedMediaTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm', 'video/ogg'];
 
@@ -55,10 +45,7 @@ router.post('/media/delete-image', async (req, res) => {
     );
 
     if (about?.img_url) {
-        const filePath = path.join(
-            'public',
-            about.img_url.replace('/uploads/', 'uploads/')
-        );
+        const filePath = uploadedFilePath(about.img_url);
 
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
@@ -69,7 +56,7 @@ router.post('/media/delete-image', async (req, res) => {
         );
     }
 
-    res.redirect('/edit-about');
+    res.redirect(`${res.locals.adminBase}/edit-about`);
 });
 
 
@@ -80,10 +67,7 @@ router.post('/media/delete-video', async (req, res) => {
         );
 
         if (about?.video_url) {
-            const filePath = path.join(
-                'public',
-                about.video_url.replace('/uploads/', 'uploads/')
-            );
+            const filePath = uploadedFilePath(about.video_url);
 
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
@@ -94,7 +78,7 @@ router.post('/media/delete-video', async (req, res) => {
             );
         }
 
-        res.redirect('/edit-about');
+        res.redirect(`${res.locals.adminBase}/edit-about`);
     } catch (err) {
         console.error('Delete video error:', err);
         res.status(500).send('Error deleting video');
@@ -108,7 +92,7 @@ router.post('/media/delete-video', async (req, res) => {
 router.post('/update', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'video', maxCount: 1 }
-]), async (req, res) => {
+]), verifyCsrfAfterUpload, async (req, res) => {
     try {
         const { title, content, m_description, m_keywords } = req.body;
 
@@ -143,7 +127,7 @@ router.post('/update', upload.fields([
             return res.status(404).json({ message: "About not found" });
         }
 
-        res.redirect('/edit-about');
+        res.redirect(`${res.locals.adminBase}/edit-about`);
     } catch (err) {
         console.error("Error updating about:", err);
         res.status(500).json({ message: "Error updating about" });

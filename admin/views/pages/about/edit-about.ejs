@@ -21,8 +21,9 @@
                                         <div class="card-body pt-3 pb-2">
 
                                             <!-- ================= UPDATE FORM ================= -->
-                                            <form action="/edit-about/update" method="POST"
+                                            <form action="<%= adminBase %>/edit-about/update" method="POST"
                                                 enctype="multipart/form-data">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
                                                 <div class="row">
 
@@ -148,8 +149,9 @@
             async function deleteImage() {
                 if (!confirm('წავშალო სურათი?')) return;
 
-                await fetch('/edit-about/media/delete-image', {
-                    method: 'POST'
+                await fetch('<%= adminBase %>/edit-about/media/delete-image', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-Token': '<%= csrfToken %>' }
                 });
 
                 location.reload();
@@ -158,8 +160,9 @@
             async function deleteVideo() {
                 if (!confirm('წავშალო ვიდეო?')) return;
 
-                await fetch('/edit-about/media/delete-video', {
-                    method: 'POST'
+                await fetch('<%= adminBase %>/edit-about/media/delete-video', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-Token': '<%= csrfToken %>' }
                 });
 
                 location.reload();

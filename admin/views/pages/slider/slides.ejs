@@ -14,6 +14,9 @@
                                     <h4 class="header-title">Striped Rows</h4>
                                 </div>
                                 <div class="card-body">
+                                    <% if (typeof error !== 'undefined') { %>
+                                        <div class="alert alert-danger"><%= error %></div>
+                                    <% } %>
                                     <div class="d-flex justify-content-center">
                                         <div class="table-responsive-sm w-100">
                                             <table class="table table-striped mb-0 w-100">
@@ -38,7 +41,7 @@
                                                                     : '' %>
                                                             </td>
                                                             <td>
-                                                                <a href="edit-slides/<%= slide.id %>"><i
+                                                                <a href="<%= adminBase %>/edit-slides/<%= slide.id %>"><i
                                                                         class="ti ti-pencil"></i></a>
                                                                 <a href="javascript:void(0)"
                                                                     onclick="openDeleteModal('<%= slide.id %>')">
@@ -64,14 +67,16 @@
                                                                             <button type="button"
                                                                                 class="btn btn-secondary"
                                                                                 data-bs-dismiss="modal">არა</button>
-                                                                            <a id="confirmDeleteBtn"
-                                                                                class="btn btn-danger">დიახ</a>
+                                                                            <form id="confirmDeleteForm" method="POST" class="d-inline">
+                                                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                                                <button type="submit" class="btn btn-danger">დიახ</button>
+                                                                            </form>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
 
-                                                            <a href="add-slides" class="btn btn-primary"><i
+                                                            <a href="<%= adminBase %>/add-slides" class="btn btn-primary"><i
                                                                     class="ti ti-plus me-1"></i>სლაიდების
                                                                 დამატება</a>
                                                 </tbody>
@@ -91,8 +96,8 @@
         <%- include('../../partials/footer') %>
             <script>
                 function openDeleteModal(slideId) {
-                    const confirmBtn = document.getElementById('confirmDeleteBtn');
-                    confirmBtn.href = 'delete-slides/' + slideId;
+                    const confirmForm = document.getElementById('confirmDeleteForm');
+                    confirmForm.action = '<%= adminBase %>/delete-slides/' + slideId;
                     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
                     modal.show();
                 }

@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs/promises';
-import path from 'path';
 import db from '../../../../config/db.conf.js';   // ← your existing pool/connection
+import { uploadedFilePath } from '../../../../config/uploads.js';
 
 const router = express.Router();
 
@@ -9,8 +9,7 @@ const router = express.Router();
 const removeImage = async (imgUrl) => {
     if (!imgUrl) return;
     try {
-        const filename = path.basename(imgUrl);
-        const filePath = path.join(process.cwd(), 'public', 'uploads', filename);
+        const filePath = uploadedFilePath(imgUrl);
         await fs.unlink(filePath);
     } catch (err) {
         // ignore “file not found”, log anything else
@@ -19,10 +18,10 @@ const removeImage = async (imgUrl) => {
 };
 
 /**
- * GET /delete-services/:id
+ * POST /delete-services/:id
  * Immediately deletes the service and its image, then redirects back.
  */
-router.get('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -42,7 +41,7 @@ router.get('/:id', async (req, res) => {
         await removeImage(img_url); 
 
         // 4. back to the list
-        res.redirect('/services');
+        res.redirect(`${res.locals.adminBase}/services`);
     } catch (err) {
         console.error(err);
         res.status(500).send('Something went wrong while deleting the service');

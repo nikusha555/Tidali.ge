@@ -3,15 +3,15 @@
         <div class="d-flex align-items-center gap-2">
 
             <!-- Brand Logo -->
-            <a href="index.html" class="logo">
+            <a href="<%= adminBase %>/services" class="logo">
                 <span class="logo-light">
-                    <span class="logo-lg"><img src="/images/Tlogo.jpg" alt="logo"></span>
-                    <span class="logo-sm"><img src="/images/Tlogo.jpg" alt="small logo"></span>
+                    <span class="logo-lg"><img src="<%= adminBase %>/images/Tlogo.jpg" alt="logo"></span>
+                    <span class="logo-sm"><img src="<%= adminBase %>/images/Tlogo.jpg" alt="small logo"></span>
                 </span>
 
                 <span class="logo-dark">
-                    <span class="logo-lg"><img src="/images/Tlogo.jpg" alt="dark logo"></span>
-                    <span class="logo-sm"><img src="/images/Tlogo.jpg" alt="small logo"></span>
+                    <span class="logo-lg"><img src="<%= adminBase %>/images/Tlogo.jpg" alt="dark logo"></span>
+                    <span class="logo-sm"><img src="<%= adminBase %>/images/Tlogo.jpg" alt="small logo"></span>
                 </span>
             </a>
 
@@ -60,7 +60,7 @@
                 <div class="dropdown">
                     <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown"
                         data-bs-offset="0,25" type="button" aria-haspopup="false" aria-expanded="false">
-                        <img src="/images/users/avatar-1.jpg" width="32" class="rounded-circle me-lg-2 d-flex"
+                        <img src="<%= adminBase %>/images/users/avatar-1.jpg" width="32" class="rounded-circle me-lg-2 d-flex"
                             alt="user-image">
                         <span class="d-lg-flex flex-column gap-1 d-none">
                             <h5 class="my-0">
@@ -79,16 +79,19 @@
                         <div class="dropdown-divider"></div>
 
                         <!-- item-->
-                        <a href="/admin/change-password" class="dropdown-item">
+                        <a href="<%= adminBase %>/change-password" class="dropdown-item">
                             <i class="ri-lock-line me-1 fs-16 align-middle"></i>
                             <span class="align-middle">პაროლის შეცვლა</span>
                         </a>
 
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item active fw-semibold text-danger">
+                        <form action="<%= adminBase %>/logout" method="POST" class="m-0">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button type="submit" class="dropdown-item active fw-semibold text-danger">
                             <i class="ri-logout-box-line me-1 fs-16 align-middle"></i>
                             <span class="align-middle">გასვლა</span>
-                        </a>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

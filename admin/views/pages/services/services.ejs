@@ -14,6 +14,9 @@
                                     <h4 class="header-title">Striped Rows</h4>
                                 </div>
                                 <div class="card-body">
+                                    <% if (typeof error !== 'undefined') { %>
+                                        <div class="alert alert-danger"><%= error %></div>
+                                    <% } %>
                                     <div class="d-flex justify-content-center">
                                         <div class="table-responsive-sm" style="width: fit-content;">
                                             <table class="table table-striped mb-0">
@@ -40,7 +43,7 @@
                                                                 <%= service.created_date.toISOString().split('T')[0] %>
                                                             </td>
                                                             <td>
-                                                                <a href="edit-services/<%= service.id %>"><i
+                                                                <a href="<%= adminBase %>/edit-services/<%= service.id %>"><i
                                                                         class="ti ti-pencil"></i></a>
                                                                 <a href="javascript:void(0)"
                                                                     onclick="openDeleteModal('<%= service.id %>')">
@@ -67,8 +70,10 @@
                                                                                 <button type="button"
                                                                                     class="btn btn-secondary"
                                                                                     data-bs-dismiss="modal">არა</button>
-                                                                                <a id="confirmDeleteBtn"
-                                                                                    class="btn btn-danger">დიახ</a>
+                                                                                <form id="confirmDeleteForm" method="POST" class="d-inline">
+                                                                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                                                    <button type="submit" class="btn btn-danger">დიახ</button>
+                                                                                </form>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -78,7 +83,7 @@
                                                         </tr>
                                                         <% }) %>
                                                 </tbody>
-                                                <a href="add-services" class="btn btn-primary"><i
+                                                <a href="<%= adminBase %>/add-services" class="btn btn-primary"><i
                                                         class="ti ti-plus me-1"></i>სერვისის დამატება</a>
                                             </table>
                                         </div>
@@ -95,8 +100,8 @@
         <%- include('../../partials/footer') %>
             <script>
                 function openDeleteModal(serviceId) {
-                    const confirmBtn = document.getElementById('confirmDeleteBtn');
-                    confirmBtn.href = 'delete-services/' + serviceId;
+                    const confirmForm = document.getElementById('confirmDeleteForm');
+                    confirmForm.action = '<%= adminBase %>/delete-services/' + serviceId;
                     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
                     modal.show();
                 }

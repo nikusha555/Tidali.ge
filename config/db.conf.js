@@ -1,8 +1,7 @@
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
 
 // Load environment variables
-dotenv.config();
+import './env.js';
 
 // Create a connection
 const connection = mysql.createPool({

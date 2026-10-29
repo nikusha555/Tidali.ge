@@ -18,7 +18,8 @@
 
                                         <div class="card-body pt-3 pb-2">
                                             <!-- ✅ Edit Form -->
-                                            <form action="/edit-contact" method="POST" enctype="multipart/form-data">
+                                            <form action="<%= adminBase %>/edit-contact" method="POST" enctype="multipart/form-data">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
                                                 <div class="row">
                                                     <!-- Image on the left -->
@@ -128,8 +129,9 @@
             async function deleteImage() {
                 if (!confirm('წავშალო სურათი?')) return;
 
-                const res = await fetch('/edit-contact/media/delete-image', {
-                    method: 'POST'
+                const res = await fetch('<%= adminBase %>/edit-contact/media/delete-image', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-Token': '<%= csrfToken %>' }
                 });
 
                 const data = await res.json();

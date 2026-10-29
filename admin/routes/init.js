@@ -2,6 +2,7 @@ import express from 'express';
 import adminRoutes from "./admin.routes.js";
 import loginRoutes from './auth/login.routes.js';
 import changePassRoutes from './auth/change-pass.routes.js';
+import logoutRoutes from './auth/logout.routes.js';
 import services from './services/get/admin.services.routes.js';
 import addServicesRoutes from './services/post/add.service.routes.js';
 import editServices from './services/edit/edit.service.routes.js';
@@ -17,8 +18,9 @@ import deleteSlides from './slider/delete/delete.slides.routes.js';
 
 export default (app) => {
     app.use('/', adminRoutes)
-    app.use('/admin/login', loginRoutes);
-    app.use('/admin/change-password', requireAdmin, changePassRoutes);
+    app.use('/login', loginRoutes);
+    app.use('/logout', logoutRoutes);
+    app.use('/change-password', requireAdmin, changePassRoutes);
     app.use('/services', requireAdmin, services);
     app.use('/add-services', requireAdmin, addServicesRoutes);
     app.use('/edit-services', requireAdmin, editServices);

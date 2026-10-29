@@ -18,8 +18,9 @@
 
                                         <div class="card-body pt-3 pb-2">
                                             <!-- ✅ Edit Form -->
-                                            <form action="/edit-slides/<%= slide.id %>" method="POST"
+                                            <form action="<%= adminBase %>/edit-slides/<%= slide.id %>" method="POST"
                                                 enctype="multipart/form-data">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
 
                                                 <!-- Current image preview -->

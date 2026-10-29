@@ -1,10 +1,10 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import connection from '../../../config/db.conf.js';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const router = express.Router();
+
+const MIN_PASSWORD_LENGTH = 8;
 
 // GET: Show change password form
 router.get('/', (req, res) => {
@@ -19,26 +19,35 @@ router.post('/', async (req, res) => {
 
     if (!adminId) return res.status(401).send('გთხოვთ თავიდან შედით სისტემაში');
 
+    // Validate input before touching the database
+    if (typeof oldPassword !== 'string' || typeof newPassword !== 'string' || !oldPassword) {
+        return res.status(400).render('pages/auth/change-password', { error: 'შეავსეთ ყველა ველი' });
+    }
+    if (newPassword !== confirmPassword) {
+        return res.status(400).render('pages/auth/change-password', { error: 'ახალი პაროლები არ ემთხვევა' });
+    }
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+        return res.status(400).render('pages/auth/change-password', {
+            error: `ახალი პაროლი უნდა შეიცავდეს მინიმუმ ${MIN_PASSWORD_LENGTH} სიმბოლოს`,
+        });
+    }
+
     try {
         // Get current admin data
         const [rows] = await connection.query('SELECT * FROM admin_users WHERE id = ?', [adminId]);
         const admin = rows[0];
+        if (!admin) return res.status(401).send('გთხოვთ თავიდან შედით სისტემაში');
 
         // Check old password
         const isMatch = await bcrypt.compare(oldPassword, admin.password);
         if (!isMatch) {
-            return res.render('pages/auth/change-password', { error: 'ძველი პაროლი არასწორია' });
-        }
-
-
-        if (newPassword !== confirmPassword) {
-            return res.render('pages/auth/change-password', { error: 'ახალი პაროლები არ ემთხვევა' });
+            return res.status(400).render('pages/auth/change-password', { error: 'ძველი პაროლი არასწორია' });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await connection.query('UPDATE admin_users SET password = ? WHERE id = ?', [hashedPassword, adminId]);
 
-        res.redirect('/services')
+        res.redirect(`${res.locals.adminBase}/services`)
     } catch (err) {
         console.error(err);
         res.status(500).send('სერვერზე მოხდა შეცდომა');

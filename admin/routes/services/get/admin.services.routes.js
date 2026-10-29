@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
     res.render('pages/services/services', { services: results });
   } catch (err) {
     console.error('Error fetching admin services:', err);
-    res.status(500).render('pages/services/services', { error: 'სერვერის შეცდომა' });
+    res.status(500).render('pages/services/services', { services: [], error: 'სერვერის შეცდომა' });
   }
 });
 
