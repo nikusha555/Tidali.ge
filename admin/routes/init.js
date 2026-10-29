@@ -23,7 +23,7 @@ export default (app) => {
     app.use('/add-services', requireAdmin, addServicesRoutes);
     app.use('/edit-services', requireAdmin, editServices);
     app.use('/delete-services', requireAdmin, deleteServices);
-    app.use('/edit-about', editAbout);
+    app.use('/edit-about', requireAdmin, editAbout);
     app.use('/edit-contact', requireAdmin, editContact);
     app.use('/add-slides', requireAdmin, addSlidesRoutes);
     app.use('/slider', requireAdmin, slider);

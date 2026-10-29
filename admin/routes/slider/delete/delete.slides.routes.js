@@ -6,10 +6,11 @@ import db from '../../../../config/db.conf.js';   // ← your existing pool/conn
 const router = express.Router();
 
 // helper — remove the image file if it’s still on disk
-const removeImage = async (filename) => {
-    if (!filename) return;
+const removeImage = async (imgUrl) => {
+    if (!imgUrl) return;
     try {
-        const filePath = path.join(process.cwd(), 'uploads', 'services', filename);
+        const filename = path.basename(imgUrl);
+        const filePath = path.join(process.cwd(), 'public', 'uploads', filename);
         await fs.unlink(filePath);
     } catch (err) {
         // ignore “file not found”, log anything else
@@ -32,13 +33,13 @@ router.get('/:id', async (req, res) => {
         );
         if (rows.length === 0) return res.status(404).send('Slide not found');
 
-        const { image } = rows[0];
+        const { img_url } = rows[0];
 
         // 2. delete the DB row
         await db.query('DELETE FROM slider WHERE id = ?', [id]);
 
         // 3. delete the file
-        await removeImage(image);
+        await removeImage(img_url);
 
         // 4. back to the list
         res.redirect('/slider');

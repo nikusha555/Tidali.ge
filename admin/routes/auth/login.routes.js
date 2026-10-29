@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
         // Set JWT in cookie (you can also return it in JSON if you're using frontend)
         res.cookie('admin_token', token, {
             httpOnly: true,
-            secure: false, // true if using https
+            secure: process.env.NODE_ENV === 'production',
             maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
         });
 

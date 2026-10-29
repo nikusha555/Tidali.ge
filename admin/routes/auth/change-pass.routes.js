@@ -25,8 +25,7 @@ router.post('/', async (req, res) => {
         const admin = rows[0];
 
         // Check old password
-        // Check old password
-        const isMatch = (oldPassword, admin.password);
+        const isMatch = await bcrypt.compare(oldPassword, admin.password);
         if (!isMatch) {
             return res.render('pages/auth/change-password', { error: 'ძველი პაროლი არასწორია' });
         }

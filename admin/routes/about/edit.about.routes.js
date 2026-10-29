@@ -20,7 +20,17 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const allowedMediaTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm', 'video/ogg'];
+
+const mediaFilter = (req, file, cb) => {
+    if (allowedMediaTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image (jpeg, png, webp, gif) or video (mp4, webm, ogg) files are allowed'), false);
+    }
+};
+
+const upload = multer({ storage: storage, fileFilter: mediaFilter, limits: { fileSize: 50 * 1024 * 1024 } });
 
 
 // GET /admin/services/:id/edit-services

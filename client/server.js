@@ -11,6 +11,14 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Basic security headers
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+});
+
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -27,6 +35,11 @@ app.use(express.json());
 
 // Initialize routes
 initRoutes(app);
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).send('404 — Page not found');
+});
 
 // Start client server
 app.listen(3010, () => {

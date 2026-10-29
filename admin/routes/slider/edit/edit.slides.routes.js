@@ -17,7 +17,17 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+const imageFilter = (req, file, cb) => {
+    if (allowedImageTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files (jpeg, png, webp, gif) are allowed'), false);
+    }
+};
+
+const upload = multer({ storage: storage, fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } });
 
 
 // GET /admin/services/:id/edit-services
