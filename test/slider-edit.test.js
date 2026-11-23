@@ -30,6 +30,7 @@ const fakeDb = {
     async query(sql, params = []) {
         const s = sql.replace(/\s+/g, ' ').trim();
         if (s === 'SELECT 1') return [[{ 1: 1 }]];
+        if (s === 'SELECT * FROM slider') return [[...slider.values()].map((row) => ({ ...row }))];
         if (s === 'SELECT * FROM slider WHERE id = ?' || s === 'SELECT id, img_url FROM slider WHERE id = ?') {
             const row = slider.get(Number(params[0]));
             return [row ? [{ ...row }] : []];
@@ -41,10 +42,12 @@ const fakeDb = {
                 throw Object.assign(new Error('simulated connection loss'), { code: 'PROTOCOL_CONNECTION_LOST' });
             }
             const row = slider.get(Number(params.at(-1)));
-            if (!row) return [{ affectedRows: 0 }];
+            if (!row) return [{ affectedRows: 0, changedRows: 0 }];
+            const before = JSON.stringify(row);
             row.title = params[0];
             if (update[1]) row.img_url = params[1];
-            return [{ affectedRows: 1 }];
+            // like mysql2 with FOUND_ROWS: matched rows vs rows whose values changed
+            return [{ affectedRows: 1, changedRows: JSON.stringify(row) === before ? 0 : 1 }];
         }
         // homepage
         if (s === 'SELECT m_description, m_keywords FROM home') return [[{ m_description: 'd', m_keywords: 'k' }]];
@@ -178,7 +181,7 @@ test('uploading a new image updates slider 2 only, serves the file and shows it 
     assert.ok(fs.existsSync(path.join(UPLOADS, 'slide-two.jpg')));
 
     assert.ok(logs.some((l) => l.includes(`[slider-edit] id=2 updated (affectedRows=1): img_url /uploads/slide-two.jpg -> ${newUrl}`)), logs.join('\n'));
-    assert.ok(logs.some((l) => /\[slider-edit\] id=2 received image\/jpeg \d+B -> .*\(on disk: \d+B, served dir: true\)/.test(l)));
+    assert.ok(logs.some((l) => /\[slider-edit\] id=2 received image\/jpeg \d+B -> .*\(on disk: \d+B, served dir: true, original name: "new\.jpg"\)/.test(l)));
 });
 
 test('saving without choosing a file keeps the current image and changes only the title', async () => {
@@ -194,7 +197,69 @@ test('saving without choosing a file keeps the current image and changes only th
     assert.deepEqual(slider.get(1), other);
     assert.deepEqual(uploadsNow(), filesBefore);
     assert.ok(logs.some((l) => l.includes(`[slider-edit] id=2 updated (affectedRows=1): img_url unchanged (${imageBefore})`)));
+    // the log tells "no file chosen" (small multipart body) apart from a file lost on the way
+    const requestLine = logs.findLast((l) => l.startsWith('[slider-edit] id=2 POST /admin/edit-slides/2 '));
+    const [, type, length, loggedTitle] = requestLine.match(/content-type=(\S+) content-length=(\d+) title=(.*)$/);
+    assert.equal(type, 'multipart/form-data');
+    assert.ok(Number(length) < 1024, requestLine);
+    assert.equal(JSON.parse(loggedTitle), 'Renamed slide');
+    assert.ok(logs.includes('[slider-edit] id=2 db: changedRows=1'));
     slider.get(2).title = 'Second slide';
+});
+
+test('Georgian title is stored exactly and shown in the admin list and on the homepage', async () => {
+    const imageBefore = slider.get(2).img_url;
+    const { cookie, token } = await openEditPage(2);
+    const title = 'ახალი სლაიდის სათაური';
+
+    const res = await submitEdit(2, { title, file: null, cookie, token });
+    assert.equal(res.status, 302);
+    assert.equal(slider.get(2).title, title);
+    assert.equal(slider.get(2).img_url, imageBefore);
+    const list = await (await request('/admin/slider', { headers: { cookie } })).text();
+    assert.ok(list.includes(title));
+    assert.ok((await (await request('/')).text()).includes('ახალი სლაიდის <br>სათაური'));
+    slider.get(2).title = 'Second slide';
+});
+
+test('changing title and image together stores both', async () => {
+    const before = uploadsNow();
+    const { cookie, token } = await openEditPage(2);
+    const res = await submitEdit(2, { title: 'Both changed', file: { bytes: sampleImage(), type: 'image/jpeg', name: 'ფოტო.jpg' }, cookie, token });
+    assert.equal(res.status, 302);
+    const added = [...uploadsNow()].filter((f) => !before.has(f));
+    assert.equal(added.length, 1);
+    assert.equal(slider.get(2).title, 'Both changed');
+    assert.equal(slider.get(2).img_url, `/uploads/${added[0]}`);
+    assert.equal((await request(`/uploads/${added[0]}`)).status, 200);
+    assert.match(added[0], /^image-\d+-\d+\.jpg$/, 'a non-ASCII filename keeps its extension');
+    assert.ok(logs.includes('[slider-edit] id=2 db: changedRows=1, new file exists: true'));
+    slider.get(2).title = 'Second slide';
+});
+
+test('resaving identical values is logged as changedRows=0', async () => {
+    const { cookie, token } = await openEditPage(2);
+    const res = await submitEdit(2, { title: slider.get(2).title, file: null, cookie, token });
+    assert.equal(res.status, 302);
+    assert.equal(logs.at(-1), '[slider-edit] id=2 db: changedRows=0');
+});
+
+test('uploads directory unavailable: edit page shows the failure, DB unchanged', async () => {
+    const dbBefore = snapshot();
+    const { cookie, token } = await openEditPage(2);
+    const moved = `${UPLOADS}-away`;
+    fs.renameSync(UPLOADS, moved);
+    try {
+        const res = await submitEdit(2, { title: 'Should not save', file: { bytes: sampleImage(), type: 'image/jpeg', name: 'x.jpg' }, cookie, token });
+        assert.equal(res.status, 500);
+        const html = await res.text();
+        assert.match(html, /alert alert-danger">სურათის ატვირთვა ვერ მოხერხდა\. ცვლილებები არ შენახულა\./);
+        assert.match(html, /<form action="\/admin\/edit-slides\/2"/);
+    } finally {
+        fs.renameSync(moved, UPLOADS);
+    }
+    assert.deepEqual(snapshot(), dbBefore);
+    assert.ok(logs.some((l) => l.startsWith('[slider-edit] id=2 upload failed:') && l.includes('ENOENT')));
 });
 
 test('unsupported image type shows a clear message and changes nothing', async () => {

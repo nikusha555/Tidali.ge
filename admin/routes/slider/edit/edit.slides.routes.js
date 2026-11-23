@@ -45,10 +45,15 @@ const uploadImage = (req, res, next) => {
     upload.single('image')(req, res, async (err) => {
         if (!err) return next();
         const message = uploadErrorMessages[err.code];
-        if (!message) return next(err);
-        log(req.params.id, `upload rejected: ${err.code} (${err.message})`);
+        if (message) {
+            log(req.params.id, `upload rejected: ${err.code} (${err.message})`);
+        } else {
+            // e.g. the uploads directory is missing or not writable; nothing was saved
+            console.error(`[slider-edit] id=${req.params.id} upload failed:`, err);
+        }
         try {
-            await renderEdit(res, req.params.id, 400, message);
+            await renderEdit(res, req.params.id, (message || err instanceof multer.MulterError) ? 400 : 500,
+                message || 'სურათის ატვირთვა ვერ მოხერხდა. ცვლილებები არ შენახულა.');
         } catch (renderErr) {
             next(renderErr);
         }
@@ -78,10 +83,17 @@ router.post('/:id', uploadImage, verifyCsrfAfterUpload, async (req, res) => {
     // Removes the new upload when the request is rejected before the DB update
     const discardUpload = () => req.file && fs.unlink(req.file.path).catch(() => {});
 
+    // TEMP diagnostics for the slider edit investigation: remove this line and the
+    // "db:" line below once production is confirmed. A form saved without a chosen
+    // file is a few hundred bytes; a large body without req.file means the file was lost.
+    log(id, `${req.method} ${req.originalUrl} content-type=${(req.get('content-type') || 'none').split(';')[0]} ` +
+        `content-length=${req.get('content-length') ?? 'none'} title=${JSON.stringify(typeof title === 'string' ? title.slice(0, 100) : title)}`);
+
     if (req.file) {
         const saved = await fs.stat(req.file.path).then(s => s.size).catch(() => null);
         log(id, `received ${req.file.mimetype} ${req.file.size}B -> ${req.file.path} ` +
-            `(on disk: ${saved === null ? 'MISSING' : saved + 'B'}, served dir: ${req.file.destination === UPLOADS_DIR})`);
+            `(on disk: ${saved === null ? 'MISSING' : saved + 'B'}, served dir: ${req.file.destination === UPLOADS_DIR}, ` +
+            `original name: ${JSON.stringify(req.file.originalname)})`);
     } else {
         log(id, 'no new image in request');
     }
@@ -124,6 +136,9 @@ router.post('/:id', uploadImage, verifyCsrfAfterUpload, async (req, res) => {
 
         log(id, `updated (affectedRows=${result.affectedRows}): img_url ` +
             (image ? `${slide.img_url} -> ${image}` : `unchanged (${slide.img_url})`));
+        // TEMP diagnostics: affectedRows counts matched rows (mysql2 FOUND_ROWS); changedRows=0 means nothing changed
+        log(id, `db: changedRows=${result.changedRows}` +
+            (image ? `, new file exists: ${await fs.access(req.file.path).then(() => true, () => false)}` : ''));
 
         // The previous image file is kept on disk on purpose.
         res.redirect(`${res.locals.adminBase}/slider`);
