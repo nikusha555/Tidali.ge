@@ -33,18 +33,16 @@
         <!-- User -->
         <div class="sidenav-user">
             <div class="dropdown-center text-center">
-                <a class="topbar-link dropdown-toggle text-reset drop-arrow-none px-2" data-bs-toggle="dropdown"
-                    type="button" aria-haspopup="false" aria-expanded="false">
+                <a class="topbar-link dropdown-toggle text-reset drop-arrow-none d-flex flex-column align-items-center gap-2 px-2 py-3"
+                    data-bs-toggle="dropdown" type="button" aria-haspopup="false" aria-expanded="false">
                     <img src="<%= adminBase %>/images/users/avatar-1.jpg" width="46" class="rounded-circle" alt="user-image">
-                    <span class="d-flex gap-1 sidenav-user-name my-2">
-                        <span>
-                            <span class="mb-0 fw-semibold lh-base fs-15">
-                                <%= admin?.username %>
-                            </span>
-                            <p class="my-0 fs-13 text-muted">ადმინი</p>
+                    <span class="d-flex flex-column align-items-center gap-1 text-center sidenav-user-name">
+                        <span class="position-relative mb-0 fw-semibold lh-base fs-15">
+                            <%= admin?.username %>
+                            <!-- absolutely placed so the name itself stays centered -->
+                            <i class="ri-arrow-down-s-line sidenav-user-arrow position-absolute top-50 start-100 translate-middle-y ms-1"></i>
                         </span>
-
-                        <i class="ri-arrow-down-s-line d-block sidenav-user-arrow align-middle"></i>
+                        <p class="my-0 fs-13 text-muted">ადმინი</p>
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
@@ -71,15 +69,6 @@
 
         <!--- Sidenav Menu -->
         <ul class="side-nav">
-            <li class="side-nav-item">
-                <a href="<%= adminBase %>/services" class="side-nav-link">
-                    <span class="menu-icon"><i class="ti ti-dashboard"></i></span>
-                    <span class="menu-text"> Dashboard </span>
-                    <span class="badge bg-danger rounded-pill">9+</span>
-                </a>
-            </li>
-
-
             <li class="side-nav-item">
                 <a href="<%= adminBase %>/slider" aria-expanded="false" aria-controls="sidebarForms" class="side-nav-link">
                     <span class="menu-icon"><i class="ti ti-table-row"></i></span>
