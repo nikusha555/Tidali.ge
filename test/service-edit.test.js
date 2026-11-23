@@ -138,6 +138,25 @@ test('edit form field names match what the route reads', async () => {
     }
 });
 
+test('content is a plain textarea: no TinyMCE, existing HTML shown as-is and saved back unchanged', async () => {
+    const add = await (await request('/admin/add-services', { headers: { cookie: authCookie } })).text();
+    const { html, cookie, token } = await openEditPage(1);
+    for (const page of [add, html]) assert.doesNotMatch(page, /tinymce|tiny\.cloud|textarea_editor/i);
+    assert.match(add, /<textarea class="form-control mb-3" name="content"\s+rows="12"/);
+    assert.match(html, /<textarea class="form-control mb-3"\s+name="content" rows="12"[^>]*required>&lt;p&gt;old&lt;\/p&gt;<\/textarea>/);
+
+    // the browser submits the textarea's decoded text: the stored HTML round-trips untouched
+    let res = await submitEdit(1, { cookie, token, fields: fieldsOf(services.get(1)) });
+    assert.equal(res.status, 302);
+    assert.equal(services.get(1).content, '<p>old</p>');
+
+    // plain text typed into the textarea is stored exactly, line breaks included
+    res = await submitEdit(1, { cookie, token, fields: fieldsOf(services.get(1), { content: 'პირველი ხაზი\r\nმეორე ხაზი' }) });
+    assert.equal(res.status, 302);
+    assert.equal(services.get(1).content, 'პირველი ხაზი\r\nმეორე ხაზი');
+    services.get(1).content = '<p>old</p>';
+});
+
 test('editing text fields updates only that service, keeps image and gallery, then redirects', async () => {
     const other = structuredClone(services.get(2));
     const galleryBefore = structuredClone(gallery);

@@ -52,8 +52,8 @@
                                                                 placeholder="სერვისის სახელი"
                                                                 value="<%= service.name %>" required>
 
-                                                            <textarea class="form-control mb-3 textarea_editor"
-                                                                name="content" rows="5" placeholder="სერვისის აღწერა"
+                                                            <textarea class="form-control mb-3"
+                                                                name="content" rows="12" style="resize: vertical;" placeholder="სერვისის აღწერა"
                                                                 required><%= service.content %></textarea>
                                                             <br>
 
@@ -187,7 +187,6 @@
             });
         </script>
 
-        <%- include('../../partials/tinyeditor') %>
             <%- include('../../partials/footer') %>
     </body>
 
